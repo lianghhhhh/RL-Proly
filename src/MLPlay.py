@@ -3,11 +3,13 @@ import time
 import torch
 import numpy as np
 from RLPlay import RLPlay
+from utils import get_config
 from envWrapper import EnvWrapper
 from stable_baselines3 import PPO
 from MLPlayArgsSaver import MLPlayArgsSaver
 from stable_baselines3.common.utils import safe_mean
 from RlplayRewardCalculator import RlplayRewardCalculator
+
 
 class MLPlay:
     def __init__(self, observation_structure, action_space_info, name, *args, **kwargs):
@@ -19,22 +21,10 @@ class MLPlay:
         self.RLPlay = RLPlay()
 
         self.env_wrapper = EnvWrapper(observation_structure, action_space_info)
-        self.config = {
-            "learning_rate": 0.0003,
-            "n_steps": 2048,
-            "batch_size": 64,
-            "n_epochs": 10,
-            "clip_range": 0.2,
-            "gamma": 0.99,
-            "ent_coef": 0,
-            "vf_coef": 0.5,
-            "max_grad_norm": 0.5,
-            "tensorboard_log": os.path.join(os.path.dirname(__file__), "tensorboard"),
-            "policy_kwargs": {
-                "net_arch": [64, 64],
-                "activation_fn": torch.nn.Tanh
-            }
-        }
+        config = get_config()
+        self.params = config["model"]["params"]
+        self.params["policy_kwargs"]["activation_fn"] = torch.nn.Tanh
+
         self.prev_observation = None
         self.prev_action = None
         self.prev_log_prob = None
@@ -44,8 +34,8 @@ class MLPlay:
         self.episode_count = 1
         self.update_count = 0
         self.start_time = time.strftime("%Y%m%d_%H%M%S")
-        self.model_save_dir = os.path.join(os.path.dirname(__file__), "models", self.start_time)
-        self.model_path = os.path.join(os.path.dirname(__file__), 'model' + ".zip")
+        self.model_save_dir = config["model"]["dir"] + '/' + self.start_time
+        self.model_path = config["model"]["path"]
 
         os.makedirs(self.model_save_dir, exist_ok=True)
 
@@ -107,15 +97,15 @@ class MLPlay:
         print(f"Initializing PPO model...")
         if os.path.exists(self.model_path):
             try:
-                self.model = PPO.load(self.model_path, env=self.env_wrapper, **self.config, verbose=1)
+                self.model = PPO.load(self.model_path, env=self.env_wrapper, **self.params, verbose=1)
                 print(f"Model loaded from {self.model_path}")
             except Exception as e:
                 print(f"Error loading model from {self.model_path}: {e}")
                 print("Creating new model...")
-                self.model = PPO("MlpPolicy", env=self.env_wrapper, **self.config, verbose=1)
+                self.model = PPO("MlpPolicy", env=self.env_wrapper, **self.params, verbose=1)
         else:
             print(f"No pre-trained model found at {self.model_path}. Creating new model...")
-            self.model = PPO("MlpPolicy", env=self.env_wrapper, **self.config, verbose=1)
+            self.model = PPO("MlpPolicy", env=self.env_wrapper, **self.params, verbose=1)
         self.model.learn(total_timesteps=0, tb_log_name=f"PPO_{self.start_time}")
 
     def _save_model(self):

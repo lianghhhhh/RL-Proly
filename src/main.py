@@ -1,11 +1,10 @@
-import json
+from utils import get_config
 from mlgame3d.game_runner import GameRunner
 from mlgame3d.game_env import GameEnvironment
 from mlgame3d.mlplay_loader import create_mlplay_from_file
 
 # Load configuration from JSON file
-with open("C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\config.json", "r") as f:
-    config = json.load(f)
+config = get_config()
 
 # Create the environment with controlled players
 env = GameEnvironment(
