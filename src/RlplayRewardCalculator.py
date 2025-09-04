@@ -69,3 +69,7 @@ class RlplayRewardCalculator:
             return leave_weight * (distance - prev_distance)
         else:
             return close_weight * (prev_distance - distance)
+
+    def calculate_time_reward(self, time_penalty):
+        return time_penalty
+    

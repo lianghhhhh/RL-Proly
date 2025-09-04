@@ -18,7 +18,7 @@ class MLPlay:
         self.mlplayArgs.init_kwargs = kwargs
         self.rlplayRewardCalculator = RlplayRewardCalculator()
         self.rlplayRewardCalculator.reset()
-        self.RLPlay = RLPlay()
+        self.RLPlay = RLPlay(self.rlplayRewardCalculator)
 
         self.env_wrapper = EnvWrapper(observation_structure, action_space_info)
         config = get_config()

@@ -16,8 +16,8 @@ env = GameEnvironment(
     decision_period=5,  # Number of FixedUpdate steps between AI decisions
     controlled_players=[0],  # Control P1
     control_modes=["mlplay"],  # Control P1 with MLPlay
-    game_parameters=[("checkpoint", 10), ("items", 0), ("mud_pit", 0)],  # Game parameters
-    result_output_file="results.csv"  # Save result data to this CSV file
+    game_parameters=[("checkpoint", 10), ("items", 0), ("mud_pit", 0), ("map", 4)],  # Game parameters
+    result_output_file=config["result"]  # Save result data to this CSV file
 )
 
 behavior_name = env.behavior_names[0]
@@ -25,13 +25,19 @@ observation_structure = env.get_observation_structure(behavior_name)
 action_space_info = env.get_action_space_info(behavior_name)
 mlplay_to_behavior_map = { 0: behavior_name }
 
+if config["mode"] == "train":
+    file_path = config["mlplay_path"]
+elif config["mode"] == "inference":
+    file_path = config["inference_path"]
+else:
+    raise ValueError("Invalid mode in config.json. Use 'train' or 'inference'.")
 
 mlplay = create_mlplay_from_file(
-    file_path=config["mlplay_path"],
+    file_path=file_path,
     observation_structure=observation_structure,
     action_space_info=action_space_info,
     name="MyCustomMLPlay",
-    game_parameters={"checkpoint": 10, "items": 0, "mud_pit": 0}
+    game_parameters={"checkpoint": 10, "items": 0, "mud_pit": 0, "map": 4}
 )
 
 
@@ -39,10 +45,10 @@ mlplay = create_mlplay_from_file(
 runner = GameRunner(
     env=env,
     mlplays=[mlplay],
-    max_episodes=5,
+    max_episodes=1000,
     render=True,
     mlplay_timeout=0.1,  # Timeout for MLPlay actions in seconds
-    game_parameters={"checkpoint": 10, "items": 0, "mud_pit": 0},
+    game_parameters={"checkpoint": 10, "items": 0, "mud_pit": 0, "map": 4},
     mlplay_to_behavior_map=mlplay_to_behavior_map
 )
 
