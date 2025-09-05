@@ -6,19 +6,16 @@ from RLPlay import RLPlay
 from utils import get_config
 from envWrapper import EnvWrapper
 from stable_baselines3 import PPO
-from MLPlayArgsSaver import MLPlayArgsSaver
 from stable_baselines3.common.utils import safe_mean
 from RlplayRewardCalculator import RlplayRewardCalculator
 
 
 class MLPlay:
     def __init__(self, observation_structure, action_space_info, name, *args, **kwargs):
-        self.mlplayArgs = MLPlayArgsSaver()
-        self.mlplayArgs.name = name
-        self.mlplayArgs.init_kwargs = kwargs
         self.rlplayRewardCalculator = RlplayRewardCalculator()
         self.rlplayRewardCalculator.reset()
         self.RLPlay = RLPlay(self.rlplayRewardCalculator)
+        self.name = name or "MLPlay"
 
         self.env_wrapper = EnvWrapper(observation_structure, action_space_info)
         config = get_config()
@@ -60,8 +57,6 @@ class MLPlay:
         self.RLPlay.reset()
 
     def update(self, observations, done, info, keyboard=set(), *args, **kwargs):
-        self.mlplayArgs.observations = observations
-        self.mlplayArgs.keyboard = keyboard
         self.rlplayRewardCalculator.update(observations)
         observation = observations["flattened"]
 

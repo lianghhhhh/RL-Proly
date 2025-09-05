@@ -9,3 +9,6 @@ def get_config():
     with open(config_path, "r") as f:
         config = json.load(f)
     return config
+
+def dict_to_tuple_list(d):
+    return [(k, v) for k, v in d.items()]
