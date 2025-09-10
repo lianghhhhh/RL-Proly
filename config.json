@@ -2,10 +2,10 @@
     "game_path": "C:\\Users\\selen\\OneDrive\\Desktop\\Proly-win32-1.3.2\\Proly.exe",
     "mlplay_path": "C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\src\\MLPlay.py",
     "inference_path": "C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\src\\inference.py",
-    "game_parameters": {"checkpoint": 10, "items": 0, "mud_pit": 0, "map": 4},
+    "game_parameters": {"checkpoint": 10, "items": 0, "mud_pit": 3, "map": 4},
     "model": {
         "dir": "C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\model",
-        "path": "C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\model\\model.zip",
+        "path": "C:\\Users\\selen\\OneDrive\\Desktop\\RL-Proly\\model\\model_2.zip",
         "params": {
             "learning_rate": 0.0003,
             "n_steps": 2048,

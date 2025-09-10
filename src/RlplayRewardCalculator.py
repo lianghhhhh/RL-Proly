@@ -50,7 +50,7 @@ class RlplayRewardCalculator:
         else:
             return decrease_weight * (self.prev_observation["agent_health"] - self.observation["agent_health"])
 
-    def calculate_mud_reward(self, threshold, leave_weight, close_weight):
+    def calculate_mud_reward(self, threshold, leave_weight, close_weight, stay_weight):
         if self.prev_observation is None or self.observation is None:
             return 0.0
         prev_nearby_obects = self.prev_observation["nearby_map_objects"]
@@ -63,12 +63,14 @@ class RlplayRewardCalculator:
         nearest_mud = min(muds, key=lambda x: np.linalg.norm(np.array(x["relative_position"])))
         prev_distance = np.linalg.norm(np.array(prev_nearest_mud["relative_position"]))
         distance = np.linalg.norm(np.array(nearest_mud["relative_position"]))
-        if prev_distance > threshold or distance > threshold:
-            return 0.0
-        if distance >= prev_distance:
-            return leave_weight * (distance - prev_distance)
-        else:
-            return close_weight * (prev_distance - distance)
+        if prev_distance > threshold and distance > threshold:
+            return 0.0 # didn't interact with mud
+        elif prev_distance <= threshold and distance > threshold:
+            return leave_weight # left mud
+        elif prev_distance > threshold and distance <= threshold:
+            return close_weight # got closer to mud
+        elif prev_distance <= threshold and distance <= threshold:
+            return stay_weight # stayed in mud
 
     def calculate_time_reward(self, time_penalty):
         return time_penalty

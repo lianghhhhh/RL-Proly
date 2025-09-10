@@ -6,10 +6,10 @@ class RLPlay:
     def update(self):
         self.step_count += 1
         reward = 0.0
-        reward += self.reward_calculator.calculate_checkpoint_reward(weight=80.0)
-        reward += self.reward_calculator.calculate_distance_reward(close_weight=1.0, leave_weight=-1.0)
-        reward += self.reward_calculator.calculate_health_reward(death_weight=-100.0, increase_weight=0, decrease_weight=0)
-        # reward += self.reward_calculator.calculate_mud_reward(threshold=2.0, leave_weight=30.0, close_weight=-30.0)
+        reward += self.reward_calculator.calculate_checkpoint_reward(weight=100.0)
+        reward += self.reward_calculator.calculate_distance_reward(close_weight=2.0, leave_weight=-1.0)
+        reward += self.reward_calculator.calculate_health_reward(death_weight=-200.0, increase_weight=0, decrease_weight=0)
+        reward += self.reward_calculator.calculate_mud_reward(threshold=1.0, leave_weight=2.0, close_weight=-5.0, stay_weight=0.0)
         # reward += self.reward_calculator.calculate_time_reward(time_penalty=-5)
         not_used_for_training = (self.step_count < 10)
         return reward, not_used_for_training
