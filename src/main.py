@@ -59,12 +59,12 @@ def choose_mode():
 
 if __name__ == "__main__":
     config = get_config()
+    mode = choose_mode()
     env = create_env(config["game_path"], config["game_parameters"])
     behavior_name = env.behavior_names[0]
     observation_structure = env.get_observation_structure(behavior_name)
     action_space_info = env.get_action_space_info(behavior_name)
     mlplay_to_behavior_map = {0: behavior_name}
-    mode = choose_mode()
     mlplay = get_mlplay(mode, observation_structure, action_space_info, config)
 
     runner = create_runner(mlplay, env, mlplay_to_behavior_map, config["game_parameters"])
