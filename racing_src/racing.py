@@ -1,7 +1,7 @@
+from mlPlay import MLPlay
 from mlgame3d.game_runner import GameRunner
 from mlgame3d.game_env import GameEnvironment
 from utils import get_config, dict_to_tuple_list
-from mlgame3d.mlplay_loader import create_mlplay_from_file
 
 def create_env(game_path, game_parameters: dict, count: int):
     # Create the environment with controlled players
@@ -21,12 +21,13 @@ def create_env(game_path, game_parameters: dict, count: int):
     return env
 
 def get_mlplay(index, observation_structure, action_space_info, config):
-    mlplay = create_mlplay_from_file(
-        file_path=config[f"inference_path_{index}"],
+    # Create an MLPlay instance for the given index
+    mlplay = MLPlay(
         observation_structure=observation_structure,
         action_space_info=action_space_info,
-        game_parameters=config["game_parameters"]
+        model_path=config[f"model_{index}"]
     )
+
     return mlplay
 
 def create_runner(mlplays: list, env, mlplay_to_behavior_map, game_parameters):

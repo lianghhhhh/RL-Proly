@@ -1,18 +1,15 @@
 import os
 import torch
-from utils import get_config
 from envWrapper import EnvWrapper
 from stable_baselines3 import PPO
 
 class MLPlay():
-    def __init__(self, observation_structure, action_space_info, name, *args, **kwargs):
-        config = get_config()
-        model_path = config["model_2"]
+    def __init__(self, observation_structure, action_space_info, model_path):
+        model_path = model_path
         if(os.path.exists(model_path) == False):
             raise FileNotFoundError(f"Model file not found at {model_path}. Please check the path in config.json.")
-        self.model = PPO.load(config["model_2"])
+        self.model = PPO.load(model_path)
         self.env_wrapper = EnvWrapper(observation_structure, action_space_info)
-        pass
 
     def reset(self):
         pass
