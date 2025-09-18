@@ -19,6 +19,13 @@ class RlplayRewardCalculator:
         if self.prev_observation["last_checkpoint_index"] < self.observation["last_checkpoint_index"]:
             return weight * (self.observation["last_checkpoint_index"] - self.prev_observation["last_checkpoint_index"])
         return 0.0
+    
+    def calculate_finish_game_reward(self, weight):
+        if self.prev_observation is None or self.observation is None:
+            return 0.0
+        if not self.prev_observation["reached_final_checkpoint"] and self.observation["reached_final_checkpoint"]:
+            return weight
+        return 0.0
 
     def calculate_distance_reward(self, close_weight, leave_weight):
         if self.prev_observation is None or self.observation is None:
@@ -66,9 +73,9 @@ class RlplayRewardCalculator:
         if prev_distance > threshold and distance > threshold:
             return 0.0 # didn't interact with mud
         elif prev_distance <= threshold and distance > threshold:
-            return leave_weight # left mud
+            return leave_weight*(distance - prev_distance) # left mud
         elif prev_distance > threshold and distance <= threshold:
-            return close_weight # got closer to mud
+            return close_weight*(prev_distance - distance) # got into mud
         elif prev_distance <= threshold and distance <= threshold:
             return stay_weight # stayed in mud
 
